@@ -4,11 +4,32 @@ class Viselkedes {
     this.transitionsData = [];
   }
 
-  rogzitMegfigyeles(animalId, behavior, idopontok) {
-    const csoportok = this.csoportositIdopontok(idopontok);
-    csoportok.forEach(([start, end, duration]) => {
-      this.viselkedesAdatok.push({ animalId, behavior, start, end, duration });
+  feldolgozNyersAdatok(animalId, rawText) {
+    const lines = rawText.split("\n");
+    const behaviorGroups = {}; 
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      const parts = trimmed.split(/\t+|\s{2,}/);
+      if (parts.length >= 2) {
+        const timeStr = parts[0].trim();
+        const behavior = parts.slice(1).join(" ").trim();
+
+        if (!behaviorGroups[behavior]) {
+          behaviorGroups[behavior] = [];
+        }
+        behaviorGroups[behavior].push(timeStr);
+      }
     });
+
+    this.viselkedesAdatok = [];
+    for (const [behavior, idopontok] of Object.entries(behaviorGroups)) {
+      const csoportok = this.csoportositIdopontok(idopontok);
+      csoportok.forEach(([start, end, duration]) => {
+        this.viselkedesAdatok.push({ animalId, behavior, start, end, duration });
+      });
+    }
 
     this.szamitAtmenetekAutomatikus();
   }
@@ -58,13 +79,15 @@ class Viselkedes {
 
   exportMindentEgybeCSV() {
     let csvTartalom = "";
+
     csvTartalom += "--- BEHAVIORS AND DURATIONS ---\n";
     csvTartalom += "Animal ID;Behavior;Start;End;Duration\n";
     this.viselkedesAdatok.forEach(({ animalId, behavior, start, end, duration }) => {
       csvTartalom += `${animalId};${behavior};${start};${end};${duration}\n`;
     });
 
-    csvTartalom += "\n"; 
+    csvTartalom += "\n";
+
     csvTartalom += "--- TRANSITIONS ---\n";
     csvTartalom += "Current;Next;Count\n";
     this.transitionsData.forEach(({ current, nextOne, count }) => {

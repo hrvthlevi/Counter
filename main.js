@@ -3,16 +3,15 @@ import { frissitTabla, frissitAtmenetekTabla } from "./fuggvenyek.js";
 
 const viselkedes = new Viselkedes();
 
-document.getElementById("hozzaad-button").addEventListener("click", () => {
+document.getElementById("process-button").addEventListener("click", () => {
   const animalId = document.getElementById("animal-id").value.trim();
-  const behavior = document.getElementById("behavior").value.trim();
-  const idopontok = document.getElementById("duration").value.trim().split("\n");
+  const rawText = document.getElementById("raw-data-input").value.trim();
+  
+  if (!rawText) return;
 
-  if (animalId && behavior && idopontok.length) {
-    viselkedes.rogzitMegfigyeles(animalId, behavior, idopontok);
-    frissitTabla(viselkedes);
-    frissitAtmenetekTabla(viselkedes);
-  }
+  viselkedes.feldolgozNyersAdatok(animalId, rawText);
+  frissitTabla(viselkedes);
+  frissitAtmenetekTabla(viselkedes);
 });
 
 document.getElementById("export-all-csv").addEventListener("click", () => {
