@@ -6,24 +6,36 @@ class Viselkedes {
 
   feldolgozNyersAdatok(animalId, rawText) {
     const lines = rawText.split("\n");
-    const behaviorGroups = {}; 
+    const behaviorGroups = {};
 
-    lines.forEach(line => {
+    for (let line of lines) {
       const trimmed = line.trim();
-      if (!trimmed) return;
+      if (!trimmed) continue;
+      
+      if (trimmed.toLowerCase().startsWith("frequencies") || trimmed === "Frequencies") {
+        break;
+      }
+
       const parts = trimmed.split(/\t+|\s{2,}/);
       if (parts.length >= 2) {
         const timeStr = parts[0].trim();
+        
+        if (!/^[0-9]+([.,][0-9]+)?$/.test(timeStr)) {
+          continue; 
+        }
+
         const behavior = parts.slice(1).join(" ").trim();
+        if (!behavior) continue;
 
         if (!behaviorGroups[behavior]) {
           behaviorGroups[behavior] = [];
         }
         behaviorGroups[behavior].push(timeStr);
       }
-    });
+    }
 
     this.viselkedesAdatok = [];
+
     for (const [behavior, idopontok] of Object.entries(behaviorGroups)) {
       const csoportok = this.csoportositIdopontok(idopontok);
       csoportok.forEach(([start, end, duration]) => {
