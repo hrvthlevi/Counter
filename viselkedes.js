@@ -6,7 +6,7 @@ class Viselkedes {
 
   feldolgozNyersAdatok(animalId, rawText) {
     const lines = rawText.split("\n");
-    const behaviorGroups = {};
+    const rawEvents = [];
 
     for (let line of lines) {
       const trimmed = line.trim();
@@ -27,12 +27,20 @@ class Viselkedes {
         const behavior = parts.slice(1).join(" ").trim();
         if (!behavior) continue;
 
-        if (!behaviorGroups[behavior]) {
-          behaviorGroups[behavior] = [];
-        }
-        behaviorGroups[behavior].push(timeStr);
+        const timeVal = parseFloat(timeStr.replace(",", "."));
+        rawEvents.push({ time: timeVal, timeStr, behavior });
       }
     }
+
+    rawEvents.sort((a, b) => a.time - b.time);
+
+    const behaviorGroups = {};
+    rawEvents.forEach(event => {
+      if (!behaviorGroups[event.behavior]) {
+        behaviorGroups[event.behavior] = [];
+      }
+      behaviorGroups[event.behavior].push(event.timeStr);
+    });
 
     this.viselkedesAdatok = [];
 
@@ -43,7 +51,7 @@ class Viselkedes {
       });
     }
 
-    this.szamitAtmenetekAutomatikus();
+    this.szamitAtmenetekIdoAlapjan(rawEvents);
   }
 
   csoportositIdopontok(idopontok) {
@@ -71,13 +79,12 @@ class Viselkedes {
     });
   }
 
-  szamitAtmenetekAutomatikus() {
-    const sorok = this.viselkedesAdatok.map(adat => adat.behavior);
+  szamitAtmenetekIdoAlapjan(rawEvents) {
     const transitionsMap = new Map();
 
-    for (let i = 0; i < sorok.length - 1; i++) {
-      const current = sorok[i];
-      const nextOne = sorok[i + 1];
+    for (let i = 0; i < rawEvents.length - 1; i++) {
+      const current = rawEvents[i].behavior;
+      const nextOne = rawEvents[i + 1].behavior;
       const key = `${current}__SEP__${nextOne}`;
       transitionsMap.set(key, (transitionsMap.get(key) || 0) + 1);
     }
