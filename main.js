@@ -1,5 +1,5 @@
 import { Viselkedes } from "./viselkedes.js";
-import { frissitTabla } from "./fuggvenyek.js";
+import { frissitTabla, frissitAtmenetekTabla } from "./fuggvenyek.js";
 
 const viselkedes = new Viselkedes();
 
@@ -11,7 +11,10 @@ document.getElementById("hozzaad-button").addEventListener("click", () => {
   if (animalId && behavior && idopontok.length) {
     viselkedes.rogzitMegfigyeles(animalId, behavior, idopontok);
     frissitTabla(viselkedes);
+    frissitAtmenetekTabla(viselkedes);
   }
 });
 
-document.getElementById("export-csv").addEventListener("click", () => viselkedes.exportCSV());
+document.getElementById("export-all-csv").addEventListener("click", () => {
+  viselkedes.exportMindentEgybeCSV();
+});

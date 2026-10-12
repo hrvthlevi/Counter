@@ -3,35 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Counter</title>
+    <title>Counter & Transitions Analyzer</title>
     <link rel="stylesheet" href="stilus.css">
     <script type="module" src="main.js"></script>
   </head>
   <body>
     <div class="container">
-      <h1>Counter</h1>
-      <div class="input-container">
-        <input type="text" id="animal-id" placeholder="Animal ID" />
-        <input type="text" id="behavior" placeholder="Behavior" />
-        <textarea
-          id="duration"
-          placeholder="Event"
-        ></textarea>
-        <button id="hozzaad-button">Add</button>
-        <button id="export-csv">CSV Export</button>
+      <h1>Counter & Transitions</h1>
+      <div class="section">
+        <h2>Behavior & Duration Recording</h2>
+        <div class="input-container">
+          <input type="text" id="animal-id" placeholder="Animal ID" />
+          <input type="text" id="behavior" placeholder="Behavior" />
+          <textarea id="duration" placeholder="Timestamps (one per line)"></textarea>
+          <button id="hozzaad-button">Add</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Animal ID</th>
+                <th>Behavior</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="eredmenyek-torzs"></tbody>
+          </table>
+        </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Animal ID</th>
-            <th>Behavior</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody id="eredmenyek-torzs"></tbody>
-      </table>
+
+      <hr style="border: 0; border-top: 1px solid #555; margin: 30px 0;">
+      <div class="section">
+        <h2>Transitions Analysis (Automatic)</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Current</th>
+                <th>Next</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody id="transitions-torzs"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="export-container">
+        <button id="export-all-csv" style="background: #28a745;">Export All to Single CSV</button>
+      </div>
+
     </div>
   </body>
 </html>
